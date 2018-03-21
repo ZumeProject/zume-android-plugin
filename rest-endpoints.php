@@ -82,7 +82,7 @@ class Zume_Android_REST_Endpoints
 					'methods'  => WP_REST_Server::READABLE,
 					'callback' => [ $this, 'get_user' ],
 				],
-		[
+                 		[
 					'methods'  => WP_REST_Server::EDITABLE,
 					'callback' => [ $this, 'post_user' ],
 				],
@@ -162,8 +162,8 @@ class Zume_Android_REST_Endpoints
 	public function post_user( WP_REST_Request $request )
 	{
 		$params = $request->get_params();
-		if( isset( $params['user_id'] ) && isset( $params['user_email'] ) && isset( $params['first_name'] ) && isset( $params['last_name'] ) ) {
-			$result = Zume_Android_App::post_user( $params['user_id'], $params['first_name'], $params['last_name'], $params['user_email'] );
+		if( isset( $params['user_id'] ) && isset( $params['user_email'] ) && isset( $params['first_name'] ) && isset( $params['last_name'] ) && isset( $params['user_phone'] ) ) {
+			$result = Zume_Android_App::post_user( $params['user_id'], $params['first_name'], $params['last_name'], $params['user_email'], $params['user_phone'] );
 			if ( $result['status'] ) {
 				return $result['data'];
 			} else {
@@ -182,9 +182,11 @@ class Zume_Android_REST_Endpoints
 			if ( $result['status'] ) {
 				return $result['data'];
 			} else {
+				error_log(print_r($result["message"], true));
 				return new WP_Error( "mark_viewed_processing_error", $result["message"], [ 'status' => 400 ] );
 			}
 		} else {
+			error_log(print_r($result["message"], true));
 			return new WP_Error( "notification_param_error", "Please provide a valid array", [ 'status' => 400 ] );
 		}
 	}
@@ -280,12 +282,23 @@ class Zume_Android_App {
 	}
 
 
-	public static function post_user ( $user_id, $first_name, $last_name, $user_email ) {
-		$user = wp_update_user( ['ID' => $user_id, 'first_name' => $first_name, 'last_name' => $last_name, 'user_email' => $user_email]);
-
+	public static function post_user ( $user_id, $first_name, $last_name, $user_email, $user_phone ) {
+		$data = 0;
+		$user = wp_update_user( ['ID' => $user_id, 'first_name' => $first_name, 'last_name' => $last_name, 'user_email' => $user_email] );
+		$user_meta = update_user_meta( $user_id, 'zume_phone_number', $user_phone );
+		if($user != 10){
+			$data = $user;
+		}
+		else if($user_meta != 10){
+			$data = $user_meta;
+		} 
+		else{
+			$data = $user;
+		}
+		error_log(print_r($data, true));		
 		return [
 			'status' => true,
-			'data' => $user,
+			'data' => $data,
 		];
 	} 
 
@@ -555,14 +568,12 @@ class Zume_Lesson_Parser {
 	}
 }
 
-#require_once( ABSPATH . 'wp-content/plugins/zume-android-plugin/class-courses.php' );
 /**
 This require command generates this error:
 PHP Parse error:  syntax error, unexpected '}', expecting end of file in
 /var/www/projects/zume/wp-content/plugins/zume-android-plugin/class-courses.php
 on line 98
 */
-
 
 /**
  * Class Zume_Course_Content
