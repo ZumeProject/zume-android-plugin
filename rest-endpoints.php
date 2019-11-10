@@ -3693,7 +3693,7 @@ class Zume_Course_Content {
 								<p>
 									<?php esc_html_e( "As Zúme Training grows, sessions will soon be available in 34 more languages. As we bring those trainings online, we’ll send you information on people in your neighborhood that speak those languages, so you can share something that’s built just for them. You can help fund the translation of the Zúme Training into additional languages by donating at", 'zume' ) ?>
 									<a href="https://big.life/donate" target="_blank">https://big.life/donate</a>
-									<?php esc_html_e( "and designating the gift for the Zúme Project with a note about the language you would like to fund.", 'zume' ) ?>
+									<?php esc_html_e( "and designating the gift for the Zúme with a note about the language you would like to fund.", 'zume' ) ?>
 								</p>
 								<p class="center">
 									<a class="button" href="https://big.life/donate" target="_blank">
